@@ -51,17 +51,18 @@ namespace IocExample
             var kernel = new MyKernel();
 
             kernel.Bind<ILogger, ConsoleLogger>(new ConsoleLogger());
-            kernel.Bind<IConnectionFactory, SqlConnectionFactory>((SqlConnectionFactory)kernel.Get<SqlConnectionFactory>(new List<object>() { "SQL Connection", kernel.Inject<ILogger>() }));
+            kernel.Bind<IConnectionFactory, SqlConnectionFactory>((SqlConnectionFactory)kernel.ToConstructor<SqlConnectionFactory>(
+                new List<object>(){ "SQL Connection", kernel.Inject<ILogger>() }));
 
             kernel.Bind<UserService, UserService>();
             kernel.Bind<QueryExecutor, QueryExecutor>();
             kernel.Bind<CommandExecutor, CommandExecutor>();
             kernel.Bind<CacheService, CacheService>();
 
-            kernel.Bind<RestClient, RestClient>((RestClient)kernel.Get<RestClient>(new List<object>() { "API KEY" }));
+            kernel.Bind<RestClient, RestClient>((RestClient)kernel.ToConstructor<RestClient>(new List<object>() { "API KEY" }));
 
             kernel.Bind<CreateUserHandler, CreateUserHandler>();
-            var createUserHandler = kernel.Resolve<CreateUserHandler>();
+            var createUserHandler = kernel.Get<CreateUserHandler>();
 
             createUserHandler.Handle();
             Console.ReadKey();

@@ -26,13 +26,13 @@ namespace IocExample.Classes
         }
 
 
-        public T Resolve<T>()
+        public T Get<T>()
         {
-            return (T)Resolve(typeof(T));
+            return (T)Get(typeof(T));
         }
 
 
-        public object Resolve(Type contract)
+        public object Get(Type contract)
         {
             if (_typeInstances.ContainsKey(contract))
             {
@@ -54,7 +54,7 @@ namespace IocExample.Classes
 
                 foreach (ParameterInfo parameterInfo in constructorParameters)
                 {
-                    parameters.Add(Resolve(parameterInfo.ParameterType));
+                    parameters.Add(Get(parameterInfo.ParameterType));
                 }
 
                 return constructor.Invoke(parameters.ToArray());
@@ -66,13 +66,13 @@ namespace IocExample.Classes
             return _typeInstances[typeof(T)];
         }
 
-        public object Get<T>()
+        public object ToConstructor<T>()
         {
             return (T)Utils.CreateInstance(typeof(T));
         }
 
         
-        public object Get<T>(List<object> parameters)
+        public object ToConstructor<T>(List<object> parameters)
         {
             return (T)Utils.CreateInstance(typeof(T), parameters);
         }
