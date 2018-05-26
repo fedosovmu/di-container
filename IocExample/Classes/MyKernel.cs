@@ -9,9 +9,8 @@ namespace IocExample.Classes
 {
     public class MyKernel
     {
-        private Utils _utils = new Utils();
         private readonly Dictionary<Type, Type> _types = new Dictionary<Type, Type>();
-        private readonly Dictionary<Type, object> _typeInstances = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 
 
         public void Bind<TContract, TImplementation>()
@@ -22,7 +21,7 @@ namespace IocExample.Classes
 
         public void Bind<TContract, TImplementation>(TImplementation instance)
         {
-            _typeInstances[typeof(TContract)] = instance;
+            _instances[typeof(TContract)] = instance;
         }
 
 
@@ -34,9 +33,9 @@ namespace IocExample.Classes
 
         public object Get(Type contract)
         {
-            if (_typeInstances.ContainsKey(contract))
+            if (_instances.ContainsKey(contract))
             {
-                return _typeInstances[contract];
+                return _instances[contract];
             }
             else
             {
@@ -63,7 +62,7 @@ namespace IocExample.Classes
 
         public object Inject<T>()
         {
-            return _typeInstances[typeof(T)];
+            return _instances[typeof(T)];
         }
 
         public object ToConstructor<T>()
