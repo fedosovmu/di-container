@@ -48,18 +48,20 @@ namespace IocExample
 
         static void Main(string[] args)
         {
-            MyKernel.Bind<ILogger, ConsoleLogger>(new ConsoleLogger());
-            MyKernel.Bind<IConnectionFactory, SqlConnectionFactory>((SqlConnectionFactory)MyKernel.Get<SqlConnectionFactory>(new List<object>() { "SQL Connection", MyKernel.Inject<ILogger>() }));
+            var kernel = new MyKernel();
 
-            MyKernel.Bind<UserService, UserService>();
-            MyKernel.Bind<QueryExecutor, QueryExecutor>();
-            MyKernel.Bind<CommandExecutor, CommandExecutor>();
-            MyKernel.Bind<CacheService, CacheService>();
+            kernel.Bind<ILogger, ConsoleLogger>(new ConsoleLogger());
+            kernel.Bind<IConnectionFactory, SqlConnectionFactory>((SqlConnectionFactory)kernel.Get<SqlConnectionFactory>(new List<object>() { "SQL Connection", kernel.Inject<ILogger>() }));
 
-            MyKernel.Bind<RestClient, RestClient>((RestClient)MyKernel.Get<RestClient>(new List<object>() { "API KEY" }));
+            kernel.Bind<UserService, UserService>();
+            kernel.Bind<QueryExecutor, QueryExecutor>();
+            kernel.Bind<CommandExecutor, CommandExecutor>();
+            kernel.Bind<CacheService, CacheService>();
 
-            MyKernel.Bind<CreateUserHandler, CreateUserHandler>();
-            var createUserHandler = MyKernel.Resolve<CreateUserHandler>();
+            kernel.Bind<RestClient, RestClient>((RestClient)kernel.Get<RestClient>(new List<object>() { "API KEY" }));
+
+            kernel.Bind<CreateUserHandler, CreateUserHandler>();
+            var createUserHandler = kernel.Resolve<CreateUserHandler>();
 
             createUserHandler.Handle();
             Console.ReadKey();

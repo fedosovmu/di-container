@@ -7,40 +7,40 @@ using System.Threading.Tasks;
 
 namespace IocExample.Classes
 {
-    public static class MyKernel
+    public class MyKernel
     {
-        private static Utils utils = new Utils();
-        private static readonly Dictionary<Type, Type> types = new Dictionary<Type, Type>();
-        private static readonly Dictionary<Type, object> typeInstances = new Dictionary<Type, object>();
+        private Utils _utils = new Utils();
+        private readonly Dictionary<Type, Type> _types = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, object> _typeInstances = new Dictionary<Type, object>();
 
 
-        public static void Bind<TContract, TImplementation>()
+        public void Bind<TContract, TImplementation>()
         {
-            types[typeof(TContract)] = typeof(TImplementation);
+            _types[typeof(TContract)] = typeof(TImplementation);
         }
 
 
-        public static void Bind<TContract, TImplementation>(TImplementation instance)
+        public void Bind<TContract, TImplementation>(TImplementation instance)
         {
-            typeInstances[typeof(TContract)] = instance;
+            _typeInstances[typeof(TContract)] = instance;
         }
 
 
-        public static T Resolve<T>()
+        public T Resolve<T>()
         {
             return (T)Resolve(typeof(T));
         }
 
 
-        public static object Resolve(Type contract)
+        public object Resolve(Type contract)
         {
-            if (typeInstances.ContainsKey(contract))
+            if (_typeInstances.ContainsKey(contract))
             {
-                return typeInstances[contract];
+                return _typeInstances[contract];
             }
             else
             {
-                Type implementation = types[contract];
+                Type implementation = _types[contract];
 
                 ConstructorInfo constructor = Utils.GetSingleConstructor(implementation);
                 ParameterInfo[] constructorParameters = constructor.GetParameters();
@@ -61,18 +61,18 @@ namespace IocExample.Classes
             }
         }
 
-        public static object Inject<T>()
+        public object Inject<T>()
         {
-            return typeInstances[typeof(T)];
+            return _typeInstances[typeof(T)];
         }
 
-        public static object Get<T>()
+        public object Get<T>()
         {
             return (T)Utils.CreateInstance(typeof(T));
         }
 
         
-        public static object Get<T>(List<object> parameters)
+        public object Get<T>(List<object> parameters)
         {
             return (T)Utils.CreateInstance(typeof(T), parameters);
         }
